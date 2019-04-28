@@ -2,8 +2,8 @@ package LINGI2132
 
 import org.scalajs.dom
 import dom.{document, html}
-import Shape._
 import org.scalajs.dom.ext.Color
+import Col._
 
 object WebApp {
   def main(args: Array[String]): Unit = {
@@ -91,14 +91,14 @@ object WebApp {
     }
 
     case class Radius(i: Int) extends CanvasyElementModifier[Shape] {
-      override def change(x: Shape): Unit = x.radius = i
+      override def change(x: Shape): Unit = x.stroke.radius = i
     }
 
     case class Width(i: Int) extends CanvasyElementModifier[Shape] {
-      override def change(x: Shape): Unit = x.width = i
+      override def change(x: Shape): Unit = x.stroke.width = i
     }
 
-    case class StrokeColor(c: Color) extends CanvasyElementModifier[Shape] {
+    case class StrokeColor(c: String) extends CanvasyElementModifier[Shape] {
       override def change(x: Shape): Unit = x.stroke.color = c
     }
 
