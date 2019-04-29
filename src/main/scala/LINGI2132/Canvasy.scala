@@ -35,6 +35,8 @@ class Canvasy(canvas: html.Canvas) {
 
 case class Rectangle(var x: Int, var y: Int, var width: Int, var height: Int) extends Shape {
 
+
+
   override def del(ctx: CanvasRenderingContext2D): Unit = {
 
   }
@@ -43,6 +45,7 @@ case class Rectangle(var x: Int, var y: Int, var width: Int, var height: Int) ex
 
   override def draw(ctx: dom.CanvasRenderingContext2D): Unit = {
     ctx.strokeStyle = this.stroke.color
+    ctx.lineWidth = this.stroke.width
     ctx.strokeRect(x, y, width, height)
   }
 
@@ -64,6 +67,7 @@ case class Circle(var radius: Double, var x: Int, var y: Int) extends Shape {
 
   override def draw(ctx: dom.CanvasRenderingContext2D): Unit = {
     ctx.strokeStyle = this.stroke.color
+    ctx.lineWidth = this.stroke.width
     ctx.arc(x, y, radius, 0.0, Math.PI * 2, true)
     ctx.stroke()
   }
@@ -85,7 +89,7 @@ trait Shape extends CanvasyElement {
   def del(ctx: dom.CanvasRenderingContext2D) : Unit
 
   object stroke {
-    var width : Double = 0
+    var width : Double = 1
     var color : String = "#000000"
   }
 
