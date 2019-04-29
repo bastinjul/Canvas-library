@@ -2,10 +2,10 @@ package LINGI2132
 
 import org.scalajs.dom
 import org.scalajs.dom.{CanvasRenderingContext2D, html}
+
 import Col._
 
 import scala.collection.mutable.ArrayBuffer
-
 
 class Canvasy(canvas: html.Canvas) {
 
@@ -20,26 +20,25 @@ class Canvasy(canvas: html.Canvas) {
     shape match {
       case r : Array[Rectangle] => {
         r.foreach(s => shapes.append(s))
-        r.foreach(s => s.draw(ctx))
       }
       case c : Array[Circle] => {
         c.foreach(s => shapes.append(s))
-        c.foreach(s => s.draw(ctx))
       }
     }
 
   def draw() : Unit = {
     shapes.foreach(sh => sh.draw(ctx))
   }
+
+  def get_ctx() : dom.CanvasRenderingContext2D = ctx
 }
 
 case class Rectangle(var x: Int, var y: Int, var width: Int, var height: Int) extends Shape {
 
-
-
-  override def del(ctx: CanvasRenderingContext2D): Unit = {
-
-  }
+  var old_x : Int = x
+  var old_y : Int = y
+  var old_width : Int = width
+  var old_height : Int = height
 
   override def size(d: Double): Unit = {}
 
@@ -61,13 +60,10 @@ case class Rectangle(var x: Int, var y: Int, var width: Int, var height: Int) ex
 
 case class Circle(var radius: Double, var x: Int, var y: Int) extends Shape {
 
-  override def del(ctx: CanvasRenderingContext2D): Unit = {
-
-  }
-
   override def draw(ctx: dom.CanvasRenderingContext2D): Unit = {
     ctx.strokeStyle = this.stroke.color
     ctx.lineWidth = this.stroke.width
+    ctx.beginPath()
     ctx.arc(x, y, radius, 0.0, Math.PI * 2, true)
     ctx.stroke()
   }
@@ -86,8 +82,6 @@ case class Circle(var radius: Double, var x: Int, var y: Int) extends Shape {
 trait Shape extends CanvasyElement {
   def draw(ctx: dom.CanvasRenderingContext2D) : Unit
 
-  def del(ctx: dom.CanvasRenderingContext2D) : Unit
-
   object stroke {
     var width : Double = 1
     var color : String = "#000000"
@@ -101,7 +95,7 @@ trait Shape extends CanvasyElement {
 
 }
 
-trait CanvasyElement {
+trait CanvasyElement{
 
 }
 
