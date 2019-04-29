@@ -1,9 +1,11 @@
 package LINGI2132
 
+
+
 import org.scalajs.dom
 import dom.{document, html}
-import org.scalajs.dom.ext.Color
 import Col._
+import Extends._
 
 object WebApp {
   def main(args: Array[String]): Unit = {
@@ -67,7 +69,7 @@ object WebApp {
     (circles(0) and circles(1)).foreach(_.size(30))
 
     // to modify multiple elements at the same time on their inner properties, we use the "change" notation:
-    circles change Radius(10)
+    //circles change Radius(10)
     circles(0) change Radius(20) and StrokeColor(Color.red)
 
     // this should not compile, as a circle has no width:
@@ -79,28 +81,9 @@ object WebApp {
     // Width, Radius,  StrokeColor and their friend are **not** functions. They are case classes, in order
     // to allow the end user of the library to create new modifiers. All these modifiers inherits from the following
     // trait:
-
-    trait CanvasyElementModifier[ApplyOn <: CanvasyElement] {
-       def change(x: ApplyOn): Unit
-    }
-
-    // Let us create an example
-    case class StrokeWidth(w: Double) extends CanvasyElementModifier[Shape] {
-      // every Shape has a stroke.
-      override def change(x: Shape): Unit = x.stroke.width = w
-    }
-
-    case class Radius(i: Int) extends CanvasyElementModifier[Shape] {
-      override def change(x: Shape): Unit = x.stroke.radius = i
-    }
-
-    case class Width(i: Int) extends CanvasyElementModifier[Shape] {
-      override def change(x: Shape): Unit = x.stroke.width = i
-    }
-
-    case class StrokeColor(c: String) extends CanvasyElementModifier[Shape] {
-      override def change(x: Shape): Unit = x.stroke.color = c
-    }
+    //trait CanvasyElementModifier[ApplyOn <: CanvasyElement] {
+    //  def change(x: ApplyOn): Unit
+    //}
 
     rectangles change StrokeWidth(3) and StrokeColor(rgb"#aa00e1")
     circles change StrokeWidth(2)
