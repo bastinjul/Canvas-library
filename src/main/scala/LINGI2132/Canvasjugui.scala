@@ -1,5 +1,6 @@
 package LINGI2132
 
+import org.scalajs.dom
 import org.scalajs.dom.html
 
 import scala.collection.mutable.ArrayBuffer
@@ -28,37 +29,79 @@ trait JGShape {
     var strokeWidth : Double = 1.0
   }
 
-  def fill() : Unit
-
-  def stroke() : Unit
-
-  def draw() : Unit
+  def draw(ctx: dom.CanvasRenderingContext2D, fill: Boolean) : Unit
 
 }
 
 case class JGRectangle(x: Int, y: Int, width: Double, height: Double) extends JGShape {
 
-  override def fill(): Unit = {}
-
-  override def stroke(): Unit = {}
-
-  override def draw(): Unit = {}
+  override def draw(ctx: dom.CanvasRenderingContext2D, fill: Boolean): Unit = {
+    if(fill) {
+      ctx.fillStyle = this.parameters.color
+      ctx.fillRect(x, y, width, height)
+    }
+    else {
+      ctx.strokeStyle = this.parameters.color
+      ctx.lineWidth = this.parameters.strokeWidth
+      ctx.strokeRect(x, y, width, height)
+    }
+  }
 }
 
 case class JGCircle(x: Int, y: Int, radius: Double) extends JGShape {
 
-  override def fill(): Unit = {}
+  override def draw(ctx: dom.CanvasRenderingContext2D, fill: Boolean): Unit = {
+    if(fill) {
+      ctx.fillStyle = this.parameters.color
+      ctx.beginPath()
+      ctx.arc(x, y, radius, 0.0, Math.PI * 2, true)
+      ctx.fill()
 
-  override def stroke(): Unit = {}
+    }
+    else {
+      ctx.strokeStyle = this.parameters.color
+      ctx.lineWidth = this.parameters.strokeWidth
+      ctx.beginPath()
+      ctx.arc(x, y, radius, 0.0, Math.PI * 2, true)
+      ctx.stroke()
+    }
 
-  override def draw(): Unit = {}
+  }
 }
 
-case class JGCurve(x: Int, y: Int) extends JGShape
-{
-  override def fill(): Unit = {}
+case class JGQuadraticCurve(cp1x: Int, cp1y: Int, x: Int, y: Int) extends JGShape {
 
-  override def stroke(): Unit = {}
+  override def draw(ctx: dom.CanvasRenderingContext2D, fill: Boolean): Unit = {
+    if(fill){
+      ctx.fillStyle = this.parameters.color
+      ctx.beginPath()
+      ctx.quadraticCurveTo(cp1x, cp1y, x, y)
+      ctx.fill()
+    }
+    else {
+      ctx.strokeStyle = this.parameters.color
+      ctx.lineWidth = this.parameters.strokeWidth
+      ctx.quadraticCurveTo(cp1x, cp1y, x, y)
+      ctx.stroke()
+    }
 
-  override def draw(): Unit = {}
+  }
+}
+
+case class JGBezierCurve(cp1x: Int, cp1y: Int, cp2x: Int, cp2y: Int, x: Int, y: Int) extends JGShape {
+
+  override def draw(ctx: dom.CanvasRenderingContext2D, fill: Boolean): Unit = {
+    if(fill){
+      ctx.fillStyle = this.parameters.color
+      ctx.beginPath()
+      ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)
+      ctx.fill()
+    }
+    else {
+      ctx.strokeStyle = this.parameters.color
+      ctx.lineWidth = this.parameters.strokeWidth
+      ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)
+      ctx.stroke()
+    }
+  }
 }
