@@ -35,11 +35,6 @@ class Canvasy(canvas: html.Canvas) {
 
 case class Rectangle(var x: Int, var y: Int, var width: Int, var height: Int) extends Shape {
 
-  var old_x : Int = x
-  var old_y : Int = y
-  var old_width : Int = width
-  var old_height : Int = height
-
   override def size(d: Double): Unit = {}
 
   override def draw(ctx: dom.CanvasRenderingContext2D): Unit = {
