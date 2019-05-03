@@ -12,12 +12,13 @@ object WebApp {
     val canvas = document.createElement("canvas").asInstanceOf[html.Canvas]
     document.body.appendChild(canvas)
 
-    val w = 300
+    val w = 1000
     canvas.width = w
     canvas.height = w
 
     //scalaJSDemo(canvas)
-    dslDemo(canvas)
+    //dslDemo(canvas)
+    CanvasjuguiExample.run(canvas)
   }
 
   def scalaJSDemo(c: html.Canvas) = {

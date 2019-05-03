@@ -171,6 +171,11 @@ object Extends {
       s.foreach(sh => Changes.change(a, sh))
       s
     }
+
+    def stroke(c: String) : Array[ApplyOn] = {
+      s.foreach(sh => sh.stroke.color = c)
+      s
+    }
   }
 
 }
