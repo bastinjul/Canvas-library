@@ -1,6 +1,8 @@
 package LINGI2132
 
 import org.scalajs.dom
+import org.scalajs.dom.html.Image
+import org.scalajs.dom.raw.{Event, HTMLImageElement}
 import org.scalajs.dom.{CanvasRenderingContext2D, html}
 
 import scala.collection.mutable.ArrayBuffer
@@ -252,6 +254,18 @@ case class JGBezierCurve(var cp1x: Double, var cp1y: Double, var cp2x: Double, v
       ctx.beginPath()
       ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)
       ctx.stroke()
+    }
+  }
+}
+
+case class JGPatterns(var src: String, patternType: String, rect: JGRectangle) extends JGShape(x = rect.x, y = rect.y) {
+  override def drawShape(ctx: CanvasRenderingContext2D): Unit = {
+    val image = dom.document.createElement("img").asInstanceOf[HTMLImageElement]
+    image.src = src
+    image.onload = { evt: Event =>
+      val pattern = ctx.createPattern(image, patternType)
+      ctx.fillStyle = pattern
+      ctx.fillRect(rect.x, rect.y, rect.width, rect.height)
     }
   }
 }

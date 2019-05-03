@@ -3,6 +3,7 @@ package LINGI2132
 import org.scalajs.dom
 import dom.{document, html}
 import Extensions._
+import org.scalajs.dom.raw.HTMLImageElement
 
 object CanvasjuguiExample {
   def run(canvas: html.Canvas): Unit = {
@@ -15,6 +16,8 @@ object CanvasjuguiExample {
     val line = JGLine(0, 0, 35, 35)
     val linearGradient = JGLinearGradient(100, 100, 100 , 250, JGRectangle(100, 100, 150, 150))
     val radialGradient = JGRadialGradient(45, 45, 10, 52, 50, 30, JGRectangle(0, 0, 150, 150))
+    val patterns = JGPatterns("https://mdn.mozillademos.org/files/222/Canvas_createpattern.png", "repeat", JGRectangle(0, 0, 150, 150))
+
 
     circles(0).translate(20, 20)
     rectangles(0).translateX(10)
@@ -56,6 +59,7 @@ object CanvasjuguiExample {
     canvasjugui += line
     canvasjugui += linearGradient
     canvasjugui += radialGradient
+    canvasjugui += patterns
 
     canvasjugui.draw()
 
