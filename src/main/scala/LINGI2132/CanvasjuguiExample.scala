@@ -13,10 +13,13 @@ object CanvasjuguiExample {
     val bezierCurves = Array.fill(2)(JGBezierCurve(75, 37, 70, 25, 50, 25))
     val arcs = Array.fill(2)(JGArc(60, 60, 20, 0.0, Math.PI/2, true))
     val line = JGLine(0, 0, 35, 35)
+    val linearGradient = JGLinearGradient(100, 100, 100 , 250, JGRectangle(100, 100, 150, 150))
+    val radialGradient = JGRadialGradient(45, 45, 10, 52, 50, 30, JGRectangle(0, 0, 150, 150))
 
     circles(0).translate(20, 20)
     rectangles(0).translateX(10)
     rectangles(1).translateY(5)
+    rectangles(0).setLineDash(scala.scalajs.js.Array(4, 2))
 
     circles.changeColor("#7CC8C5")
 
@@ -32,11 +35,27 @@ object CanvasjuguiExample {
 
     arcs(1).fill(true)
 
+    line.strokeWidth(10)
+    line.strokeLineCap("round")
+
+    linearGradient.addColorStop(0, "#00ABEB")
+    linearGradient.addColorStop(0.5, "#fff")
+    linearGradient.addColorStop(0.5, "#26C000")
+    linearGradient.addColorStop(1, "#fff")
+    linearGradient.fill(true)
+
+    radialGradient.addColorStop(0, "#A7D30C")
+    radialGradient.addColorStop(0.9, "#019F62")
+    radialGradient.addColorStop(1, "rgba(1, 159, 98, 0)")
+    radialGradient.fill(true)
+
     canvasjugui += circles
     canvasjugui += rectangles
     canvasjugui += bezierCurves
     canvasjugui += arcs
     canvasjugui += line
+    canvasjugui += linearGradient
+    canvasjugui += radialGradient
 
     canvasjugui.draw()
 

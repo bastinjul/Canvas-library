@@ -7,7 +7,7 @@ import scala.collection.mutable.ArrayBuffer
 
 class Canvasjugui(canvas: html.Canvas) {
 
-  val ctx = canvas.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
+  val ctx : dom.CanvasRenderingContext2D = canvas.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
   val w = 300
   canvas.width = w
   canvas.height = w
@@ -34,15 +34,18 @@ abstract class JGShape(var x: Double, var y: Double) {
     var strokeWidth : Double = 1.0
     var transparency: Double = 1.0
     var fill : Boolean = false
+    var lineDashOffset : Double = 0
+    var lineDash: scala.scalajs.js.Array[Double] = scala.scalajs.js.Array.apply(0, 0)
   }
 
   def draw(ctx: dom.CanvasRenderingContext2D) : Unit = {
     ctx.globalAlpha = this.parameters.transparency
     if(this.parameters.fill) {
       ctx.fillStyle = this.parameters.color
-
     }
     else {
+      ctx.setLineDash(this.parameters.lineDash)
+      ctx.lineDashOffset = this.parameters.lineDashOffset
       ctx.strokeStyle = this.parameters.color
       ctx.lineWidth = this.parameters.strokeWidth
     }
@@ -85,6 +88,14 @@ abstract class JGShape(var x: Double, var y: Double) {
     this.parameters.transparency = t
   }
 
+  def setLineDash(value: scala.scalajs.js.Array[Double]) : Unit = {
+    this.parameters.lineDash = value
+  }
+
+  def lineDashOffset(value: Double) : Unit = {
+    this.parameters.lineDashOffset = value
+  }
+
 }
 
 case class JGRectangle(var xr: Double, var yr: Double, var width: Double, var height: Double) extends JGShape(x = xr, y = yr) {
@@ -100,13 +111,82 @@ case class JGRectangle(var xr: Double, var yr: Double, var width: Double, var he
 
 }
 
-case class JGLine(var x1: Double, var y1: Double, var x2: Double, var y2: Double) extends JGShape(x = x1, y = y1) {
+case class JGLine(var x1: Double, var y1: Double, var x2: Double, var y2: Double) extends JGShape(x = x1, y = y1) with LineParameters {
   override def drawShape(ctx: dom.CanvasRenderingContext2D): Unit = {
     ctx.beginPath()
+    setParameters(ctx)
     ctx.moveTo(x1, y1)
     ctx.lineTo(x2, y2)
     ctx.stroke()
   }
+}
+
+case class JGLinearGradient(var x1: Double, var y1: Double, var x2: Double, var y2: Double, rect: JGRectangle) extends JGShape(x = rect.x, y = rect.y) with ColorStop {
+
+  override def drawShape(ctx: CanvasRenderingContext2D): Unit = {
+    val linearGradient = ctx.createLinearGradient(x1, y1, x2, y2)
+    this.colors.colorStop.foreach(c => linearGradient.addColorStop(c._1, c._2))
+    if(this.parameters.fill){
+      ctx.fillStyle = linearGradient
+      ctx.fillRect(rect.x, rect.y, rect.width, rect.height)
+    }
+    else {
+      ctx.strokeStyle = linearGradient
+      ctx.strokeRect(rect.x, rect.y, rect.width, rect.height)
+    }
+  }
+}
+
+case class JGRadialGradient(var x1: Double, var y1: Double, var r1: Double, var x2: Double, var y2: Double, var r2: Double, rect: JGRectangle) extends JGShape(x = rect.x, y = rect.y) with ColorStop {
+  override def drawShape(ctx: CanvasRenderingContext2D): Unit = {
+    val radialGradient = ctx.createRadialGradient(x1, y1, r1, x2, y2, r2)
+    this.colors.colorStop.foreach(c => radialGradient.addColorStop(c._1, c._2))
+    if(this.parameters.fill){
+      ctx.fillStyle = radialGradient
+      ctx.fillRect(rect.x, rect.y, rect.width, rect.height)
+    }
+    else {
+      ctx.strokeStyle = radialGradient
+      ctx.strokeRect(rect.x, rect.y, rect.width, rect.height)
+    }
+  }
+}
+
+trait ColorStop {
+  object colors {
+    var colorStop: ArrayBuffer[(Double, String)] = ArrayBuffer()
+  }
+
+  def addColorStop(offset: Double, color: String) : Unit = {
+    this.colors.colorStop.append((offset, color))
+  }
+}
+
+trait LineParameters {
+  object lineParameters {
+    var strokeLineCap : String = "butt"
+    var lineJoin : String = "round"
+    var miterLimit : Double = 10.0
+  }
+
+  def strokeLineCap(endType: String) : Unit = {
+    this.lineParameters.strokeLineCap = endType
+  }
+
+  def lineJoin(ltype: String) : Unit = {
+    this.lineParameters.lineJoin = ltype
+  }
+
+  def miterLimit(value: Double) : Unit = {
+    this.lineParameters.miterLimit = value
+  }
+
+  def setParameters(ctx: dom.CanvasRenderingContext2D): Unit ={
+    ctx.lineCap = this.lineParameters.strokeLineCap
+    ctx.lineJoin = this.lineParameters.lineJoin
+    ctx.miterLimit = this.lineParameters.miterLimit
+  }
+
 }
 
 case class JGCircle(var xc: Double, var yc: Double, var radius: Double) extends JGShape(x = xc, y = yc) {

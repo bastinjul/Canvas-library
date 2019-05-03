@@ -12,7 +12,7 @@ object WebApp {
     val canvas = document.createElement("canvas").asInstanceOf[html.Canvas]
     document.body.appendChild(canvas)
 
-    val w = 1000
+    val w = 2000
     canvas.width = w
     canvas.height = w
 
