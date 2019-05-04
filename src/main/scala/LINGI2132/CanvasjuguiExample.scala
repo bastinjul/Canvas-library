@@ -16,8 +16,8 @@ object CanvasjuguiExample {
     val line = JGLine(0, 0, 35, 35)
     val linearGradient = JGLinearGradient(100, 100, 100 , 250, JGRectangle(100, 100, 150, 150))
     val radialGradient = JGRadialGradient(45, 45, 10, 52, 50, 30, JGRectangle(0, 0, 150, 150))
-    val patterns = JGPatterns("https://mdn.mozillademos.org/files/222/Canvas_createpattern.png", "repeat", JGRectangle(0, 0, 150, 150))
-
+    val patterns = JGPatterns("https://mdn.mozillademos.org/files/222/Canvas_createpattern.png", "repeat", JGRectangle(0, 300, 150, 150))
+    val text = JGText("Hello World!", 400, 20)
 
     circles(0).translate(20, 20)
     rectangles(0).translateX(10)
@@ -46,11 +46,18 @@ object CanvasjuguiExample {
     linearGradient.addColorStop(0.5, "#26C000")
     linearGradient.addColorStop(1, "#fff")
     linearGradient.fill(true)
+    linearGradient.shadowOffsetX(5)
+    linearGradient.shadowOffsetY(5)
+    linearGradient.shadowBlur(2)
 
     radialGradient.addColorStop(0, "#A7D30C")
     radialGradient.addColorStop(0.9, "#019F62")
     radialGradient.addColorStop(1, "rgba(1, 159, 98, 0)")
     radialGradient.fill(true)
+
+    text.changeColor("#3FD72F")
+    text.font("48px serif")
+    text.textBaseline("hanging")
 
     canvasjugui += circles
     canvasjugui += rectangles
@@ -60,6 +67,7 @@ object CanvasjuguiExample {
     canvasjugui += linearGradient
     canvasjugui += radialGradient
     canvasjugui += patterns
+    canvasjugui += text
 
     canvasjugui.draw()
 

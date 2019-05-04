@@ -10,9 +10,6 @@ import scala.collection.mutable.ArrayBuffer
 class Canvasjugui(canvas: html.Canvas) {
 
   val ctx : dom.CanvasRenderingContext2D = canvas.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
-  val w = 300
-  canvas.width = w
-  canvas.height = w
 
   var shapes = new ArrayBuffer[JGShape]
 
@@ -38,10 +35,21 @@ abstract class JGShape(var x: Double, var y: Double) {
     var fill : Boolean = false
     var lineDashOffset : Double = 0
     var lineDash: scala.scalajs.js.Array[Double] = scala.scalajs.js.Array.apply(0, 0)
+
+    object shadow {
+      var shadowOffsetX : Double = 0
+      var shadowOffsetY : Double = 0
+      var shadowBlur : Double = 0
+      var shadowColor : String = "#000000"
+    }
   }
 
   def draw(ctx: dom.CanvasRenderingContext2D) : Unit = {
     ctx.globalAlpha = this.parameters.transparency
+    ctx.shadowOffsetX = this.parameters.shadow.shadowOffsetY
+    ctx.shadowOffsetY = this.parameters.shadow.shadowOffsetY
+    ctx.shadowBlur = this.parameters.shadow.shadowBlur
+    ctx.shadowColor = this.parameters.shadow.shadowColor
     if(this.parameters.fill) {
       ctx.fillStyle = this.parameters.color
     }
@@ -96,6 +104,22 @@ abstract class JGShape(var x: Double, var y: Double) {
 
   def lineDashOffset(value: Double) : Unit = {
     this.parameters.lineDashOffset = value
+  }
+
+  def shadowOffsetX(offset : Double): Unit = {
+    this.parameters.shadow.shadowOffsetX = offset
+  }
+
+  def shadowOffsetY(offset: Double): Unit = {
+    this.parameters.shadow.shadowOffsetY = offset
+  }
+
+  def shadowBlur(blur: Double): Unit = {
+    this.parameters.shadow.shadowBlur = blur
+  }
+
+  def shadowColor(color: String): Unit = {
+    this.parameters.shadow.shadowColor = color
   }
 
 }
@@ -267,6 +291,40 @@ case class JGPatterns(var src: String, patternType: String, rect: JGRectangle) e
       ctx.fillStyle = pattern
       ctx.fillRect(rect.x, rect.y, rect.width, rect.height)
     }
+  }
+}
+
+case class JGText(var text: String, var xt: Double, var yt: Double) extends JGShape(x = xt, y = yt) with StylingText {
+  override def drawShape(ctx: CanvasRenderingContext2D): Unit = {
+    ctx.font = this.textStyle.font
+    ctx.textAlign = this.textStyle.textAlign
+    ctx.textBaseline = this.textStyle.textBaseline
+    if(this.parameters.fill){
+      ctx.fillText(text, x, y)
+    }
+    else {
+      ctx.strokeText(text, x, y)
+    }
+  }
+}
+
+trait StylingText{
+  object textStyle {
+    var font : String = "10px sans-serif"
+    var textAlign : String = "start"
+    var textBaseline : String = "alphabetic"
+  }
+
+  def font(font: String): Unit ={
+    this.textStyle.font = font
+  }
+
+  def textAlign(textAlignment: String): Unit ={
+    this.textStyle.textAlign = textAlignment
+  }
+
+  def textBaseline(textBaseline: String): Unit ={
+    this.textStyle.textBaseline = textBaseline
   }
 }
 
