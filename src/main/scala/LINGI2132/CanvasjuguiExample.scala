@@ -68,7 +68,7 @@ object CanvasjuguiExample {
     image2.slice(33, 71, 104, 124, 500, 200, 87, 104)
 
     rectangles(0).translate(50, 50)
-    rectangles(0).rotate((Math.PI / 180) * 25)
+    rectangles(0).rotate((Math.PI / 180) * 25, 0, 0)
 
     rectangles(0).scale(2, 2)
 
@@ -95,8 +95,11 @@ object CanvasjuguiExample {
 
     /*======ANIMATIONS======*/
     val cir = JGCircle(450,450,50)
-
     canvasjugui.anime(cir, LineDashAnimation(scala.scalajs.js.Array(4, 2)), new AnimationZone(395,395, 110, 110))
+
+    val rect = JGRectangle(600, 600, 30, 30)
+    canvasjugui.anime(rect, RotationAnimation(615, 615), new AnimationZone(550, 550, 200, 200))
+
   }
 
 

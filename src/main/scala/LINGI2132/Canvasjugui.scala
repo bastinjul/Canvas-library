@@ -27,6 +27,7 @@ class Canvasjugui(canvas: html.Canvas) {
   def anime(shape: JGShape, animation: Animation[JGShape], animationZone: AnimationZone): Unit = {
     animation match{
       case lineDashAnimation : LineDashAnimation => lineDashAnimation.anime(shape, ctx, animationZone)
+      case rotationAnimation: RotationAnimation => rotationAnimation.anime(shape, ctx, animationZone)
     }
   }
 
@@ -45,6 +46,8 @@ trait Animable {}
 
 trait Animation [ApplyOn <: Animable] {
   def anime(shape: JGShape, ctx: dom.CanvasRenderingContext2D, animationZone: AnimationZone) : Unit
+  def draw(shape: JGShape, ctx: dom.CanvasRenderingContext2D, animationZone: AnimationZone) : Unit
+  def march(shape: JGShape, ctx: dom.CanvasRenderingContext2D, animationZone: AnimationZone): Unit
 }
 
 case class LineDashAnimation(lineDash: scala.scalajs.js.Array[Double]) extends Animation[JGShape] {
@@ -52,27 +55,49 @@ case class LineDashAnimation(lineDash: scala.scalajs.js.Array[Double]) extends A
 
   override def anime(shape: JGShape, ctx: dom.CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {
     shape.setLineDash(lineDash)
-    val color = shape.parameters.color
-    march(shape, ctx, color, animationZone)
+    march(shape, ctx, animationZone)
   }
 
-  def draw(shape:JGShape, ctx: dom.CanvasRenderingContext2D, color: String, animationZone: AnimationZone): Unit ={
+  override def draw(shape:JGShape, ctx: dom.CanvasRenderingContext2D, animationZone: AnimationZone): Unit ={
     ctx.clearRect(animationZone.zone.x, animationZone.zone.y, animationZone.zone.width, animationZone.zone.height)
     shape.fill(false)
-    shape.changeColor(color)
     shape.lineDashOffset(-this.offset)
     shape.setLineDash(lineDash)
     shape.draw(ctx)
   }
 
-  def march(shape:JGShape,ctx: dom.CanvasRenderingContext2D, color: String, animationZone: AnimationZone): Unit = {
+  override def march(shape:JGShape,ctx: dom.CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {
     offset += 1
     if(offset > 16){
       offset = 0
     }
-    draw(shape, ctx, color, animationZone)
+    draw(shape, ctx, animationZone)
     setTimeout(20) {
-      march(shape, ctx, color, animationZone)
+      march(shape, ctx, animationZone)
+    }
+  }
+}
+
+case class RotationAnimation(centerX: Double, centerY: Double) extends Animation[JGShape] {
+  var angle : Double = 0
+  override def anime(shape: JGShape, ctx: CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {
+    march(shape, ctx, animationZone)
+  }
+
+  override def draw(shape: JGShape, ctx: CanvasRenderingContext2D, animationZone: AnimationZone): Unit ={
+    ctx.clearRect(animationZone.zone.x, animationZone.zone.y, animationZone.zone.width, animationZone.zone.height)
+    shape.rotate(angle, centerX, centerY)
+    shape.draw(ctx)
+  }
+
+  override def march(shape: JGShape, ctx: CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {
+    angle += Math.PI / 180
+    if (angle == Math.PI) {
+      angle = 0
+    }
+    draw(shape, ctx, animationZone)
+    setTimeout(60) {
+      march(shape, ctx, animationZone)
     }
   }
 }
@@ -88,10 +113,15 @@ abstract class JGShape(var x: Double, var y: Double) extends Animable {
     var clip : Boolean = false
     var lineDashOffset : Double = 0
     var lineDash: scala.scalajs.js.Array[Double] = scala.scalajs.js.Array.apply(0, 0)
-    var rotation : Double = 0
     var scaleX : Double = 1
     var scaleY : Double = 1
     var compositeOperation : String = "source-over"
+
+    object rotation {
+      var angle: Double = 0
+      var centerRotationX : Double = 0
+      var centerRotationY : Double = 0
+    }
 
     object shadow {
       var shadowOffsetX : Double = 0
@@ -136,11 +166,13 @@ abstract class JGShape(var x: Double, var y: Double) extends Animable {
       this.parameters.transformation.verticalSkewing, this.parameters.transformation.verticalScaling,
       this.parameters.transformation.horizontalMoving, this.parameters.transformation.verticalMoving)
     ctx.scale(this.parameters.scaleX, this.parameters.scaleY)
-    ctx.rotate(this.parameters.rotation)
+    ctx.translate(this.parameters.rotation.centerRotationX, this.parameters.rotation.centerRotationY)
+    ctx.rotate(this.parameters.rotation.angle)
+    ctx.translate(-this.parameters.rotation.centerRotationX, -this.parameters.rotation.centerRotationY)
   }
 
   def contextResetTransformation(ctx: dom.CanvasRenderingContext2D): Unit = {
-    ctx.rotate(-this.parameters.rotation)
+    ctx.rotate(-this.parameters.rotation.angle)
     ctx.scale(1/this.parameters.scaleX, 1/this.parameters.scaleY)
     ctx.setTransform(1, 0, 0, 1, 0, 0)
   }
@@ -231,8 +263,10 @@ abstract class JGShape(var x: Double, var y: Double) extends Animable {
     this.parameters.shadow.shadowColor = color
   }
 
-  def rotate(rotation : Double): Unit = {
-    this.parameters.rotation = rotation
+  def rotate(angle : Double, centerX: Double, centerY: Double): Unit = {
+    this.parameters.rotation.angle = angle
+    this.parameters.rotation.centerRotationY = centerY
+    this.parameters.rotation.centerRotationX = centerX
   }
 
   def scale(x: Double, y: Double): Unit = {
@@ -621,8 +655,8 @@ object Extensions {
       s
     }
 
-    def rotate(rotation : Double): Array[ApplyOn] = {
-      s.foreach(sh => sh.rotate(rotation))
+    def rotate(rotation : Double, centerX : Double, centerY : Double): Array[ApplyOn] = {
+      s.foreach(sh => sh.rotate(rotation, centerX, centerY))
       s
     }
 
