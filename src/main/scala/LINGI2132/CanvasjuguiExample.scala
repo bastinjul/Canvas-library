@@ -91,6 +91,12 @@ object CanvasjuguiExample {
 
     canvasjugui.draw()
 
+
+
+    /*======ANIMATIONS======*/
+    val cir = JGCircle(450,450,50)
+
+    canvasjugui.anime(cir, LineDashAnimation(scala.scalajs.js.Array(4, 2)), new AnimationZone(395,395, 110, 110))
   }
 
 

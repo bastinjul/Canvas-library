@@ -3,6 +3,7 @@ package LINGI2132
 import org.scalajs.dom
 import org.scalajs.dom.raw.{Event, HTMLImageElement}
 import org.scalajs.dom.{CanvasRenderingContext2D, html}
+import scala.scalajs.js.timers._
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -23,9 +24,61 @@ class Canvasjugui(canvas: html.Canvas) {
     shapes.foreach(s => s.draw(ctx))
   }
 
+  def anime(shape: JGShape, animation: Animation[JGShape], animationZone: AnimationZone): Unit = {
+    animation match{
+      case lineDashAnimation : LineDashAnimation => lineDashAnimation.anime(shape, ctx, animationZone)
+    }
+  }
+
 }
 
-abstract class JGShape(var x: Double, var y: Double) {
+class AnimationZone(xA: Double, yA: Double, widthA: Double, heightA: Double) {
+  object zone{
+    val x : Double = xA
+    val y : Double = yA
+    val width : Double = widthA
+    val height : Double = heightA
+  }
+}
+
+trait Animable {}
+
+trait Animation [ApplyOn <: Animable] {
+  def anime(shape: JGShape, ctx: dom.CanvasRenderingContext2D, animationZone: AnimationZone) : Unit
+}
+
+case class LineDashAnimation(lineDash: scala.scalajs.js.Array[Double]) extends Animation[JGShape] {
+  var offset = 0
+
+  override def anime(shape: JGShape, ctx: dom.CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {
+    shape.setLineDash(lineDash)
+    val color = shape.parameters.color
+    march(shape, ctx, color, animationZone)
+  }
+
+  def draw(shape:JGShape, ctx: dom.CanvasRenderingContext2D, color: String, animationZone: AnimationZone): Unit ={
+    ctx.clearRect(animationZone.zone.x, animationZone.zone.y, animationZone.zone.width, animationZone.zone.height)
+    shape.fill(false)
+    shape.changeColor(color)
+    shape.lineDashOffset(-this.offset)
+    shape.setLineDash(lineDash)
+    shape.draw(ctx)
+  }
+
+  def march(shape:JGShape,ctx: dom.CanvasRenderingContext2D, color: String, animationZone: AnimationZone): Unit = {
+    offset += 1
+    if(offset > 16){
+      offset = 0
+    }
+    draw(shape, ctx, color, animationZone)
+    setTimeout(20) {
+      march(shape, ctx, color, animationZone)
+    }
+  }
+}
+
+
+abstract class JGShape(var x: Double, var y: Double) extends Animable {
 
   object parameters {
     var color : String = "#000000"
