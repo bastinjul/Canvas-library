@@ -100,6 +100,10 @@ object CanvasjuguiExample {
     val rect = JGRectangle(600, 600, 30, 30)
     canvasjugui.anime(rect, RotationAnimation(615, 615), new AnimationZone(550, 550, 200, 200))
 
+    val rect2 = JGRectangle(700, 100, 60, 60)
+    rect2.fill(true)
+    rect2.changeColor("#1E5766")
+    canvasjugui.anime(rect2, ScalingAnimation(0.7, 0.5, 2, 2.5), new AnimationZone(700, 100, 200, 200))
   }
 
 

@@ -28,6 +28,7 @@ class Canvasjugui(canvas: html.Canvas) {
     animation match{
       case lineDashAnimation : LineDashAnimation => lineDashAnimation.anime(shape, ctx, animationZone)
       case rotationAnimation: RotationAnimation => rotationAnimation.anime(shape, ctx, animationZone)
+      case scalingAnimation: ScalingAnimation => scalingAnimation.anime(shape, ctx, animationZone)
     }
   }
 
@@ -102,6 +103,44 @@ case class RotationAnimation(centerX: Double, centerY: Double) extends Animation
   }
 }
 
+case class ScalingAnimation(minXScale : Double, minYScale: Double, maxXScale: Double, maxYScale: Double) extends Animation[JGShape]{
+  var scaleX : Double = minXScale
+  var scaleY : Double = minYScale
+  var ascent : Boolean = true
+
+  override def anime(shape: JGShape, ctx: CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {
+    march(shape, ctx, animationZone)
+  }
+
+  override def draw(shape: JGShape, ctx: CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {
+    ctx.clearRect(animationZone.zone.x, animationZone.zone.y, animationZone.zone.width, animationZone.zone.height)
+    shape.scale(scaleX, scaleY)
+    shape.draw(ctx)
+  }
+
+  override def march(shape: JGShape, ctx: CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {
+    if (ascent) {
+      scaleX += (maxXScale - minYScale) / 50
+      scaleY += (maxYScale - minYScale) / 50
+    }
+    else {
+      scaleX -= (maxXScale - minYScale) / 50
+      scaleY -= (maxYScale - minYScale) / 50
+    }
+    if (scaleX >= maxXScale) {
+      ascent = false
+    }
+    if (scaleX <= minXScale) {
+      ascent = true
+    }
+
+    draw(shape, ctx, animationZone)
+    setTimeout(100) {
+      march(shape, ctx, animationZone)
+    }
+  }
+}
+
 
 abstract class JGShape(var x: Double, var y: Double) extends Animable {
 
@@ -165,15 +204,19 @@ abstract class JGShape(var x: Double, var y: Double) extends Animable {
     ctx.setTransform(this.parameters.transformation.horizontalScaling, this.parameters.transformation.horizontalSkewing,
       this.parameters.transformation.verticalSkewing, this.parameters.transformation.verticalScaling,
       this.parameters.transformation.horizontalMoving, this.parameters.transformation.verticalMoving)
-    ctx.scale(this.parameters.scaleX, this.parameters.scaleY)
     ctx.translate(this.parameters.rotation.centerRotationX, this.parameters.rotation.centerRotationY)
     ctx.rotate(this.parameters.rotation.angle)
     ctx.translate(-this.parameters.rotation.centerRotationX, -this.parameters.rotation.centerRotationY)
+    ctx.scale(this.parameters.scaleX, this.parameters.scaleY)
+    this.x = this.x / this.parameters.scaleX
+    this.y = this.y / this.parameters.scaleY
   }
 
   def contextResetTransformation(ctx: dom.CanvasRenderingContext2D): Unit = {
-    ctx.rotate(-this.parameters.rotation.angle)
+    this.x = this.x * this.parameters.scaleX
+    this.y = this.y * this.parameters.scaleY
     ctx.scale(1/this.parameters.scaleX, 1/this.parameters.scaleY)
+    ctx.rotate(-this.parameters.rotation.angle)
     ctx.setTransform(1, 0, 0, 1, 0, 0)
   }
 
