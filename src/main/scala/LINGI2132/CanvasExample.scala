@@ -70,7 +70,7 @@ object WebApp {
     (circles(0) and circles(1)).foreach(_.size(30))
 
     // to modify multiple elements at the same time on their inner properties, we use the "change" notation:
-    //circles change Radius(10)
+    circles change Radius(10)
     circles(0) change Radius(20) and StrokeColor(Color.red)
 
     // this should not compile, as a circle has no width:

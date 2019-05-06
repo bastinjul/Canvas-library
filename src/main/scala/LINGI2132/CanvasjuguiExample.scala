@@ -4,6 +4,9 @@ import org.scalajs.dom
 import dom.{document, html}
 import Extensions._
 
+import scala.collection.mutable.Queue
+import scala.scalajs.js.{Array => ArrayJs}
+
 object CanvasjuguiExample {
   def run(canvas: html.Canvas): Unit = {
     val canvasjugui = new Canvasjugui(canvas)
@@ -25,7 +28,7 @@ object CanvasjuguiExample {
     circles(0).translate(20, 20)
     rectangles(0).translateX(10)
     rectangles(1).translateY(5)
-    rectangles(0).setLineDash(scala.scalajs.js.Array(4, 2))
+    rectangles(0).setLineDash(ArrayJs(4, 2))
 
     circles.changeColor("#7CC8C5")
 
@@ -92,10 +95,30 @@ object CanvasjuguiExample {
     canvasjugui.draw()
 
 
+    /*======INTERACTIONS=======*/
+
+    val cir2 = JGCircle(200, 600, 80)
+    cir2.fill(true)
+    cir2.changeColor("#51BCD8")
+    canvasjugui.interact(cir2, DisapearInteraction(3))
+
+    val cir3 = JGCircle(300, 600, 80)
+    cir3.fill(true)
+    cir3.changeColor("#51BCD8")
+    canvasjugui.interact(cir3, DisapearInteraction(-1))
+
+    val rect3 = JGRectangle(200, 300, 50, 60)
+    rect3.fill(true)
+    canvasjugui.interact(rect3, ChangeColorInteraction(Queue.apply("#FF1313", "#3E792E", "#1647DF")))
+
+    val rect4 = JGRectangle(300, 300, 50, 60)
+    rect4.fill(true)
+    canvasjugui.interact(rect4, ChangeColorInteraction(Queue.apply("#FF1313", "#3E792E", "#1647DF")))
+
 
     /*======ANIMATIONS======*/
     val cir = JGCircle(450,450,50)
-    canvasjugui.anime(cir, LineDashAnimation(scala.scalajs.js.Array(4, 2)), new AnimationZone(395,395, 110, 110))
+    canvasjugui.anime(cir, LineDashAnimation(ArrayJs(4, 2)), new AnimationZone(395,395, 110, 110))
 
     val rect = JGRectangle(600, 600, 30, 30)
     canvasjugui.anime(rect, RotationAnimation(615, 615), new AnimationZone(550, 550, 200, 200))
@@ -104,6 +127,8 @@ object CanvasjuguiExample {
     rect2.fill(true)
     rect2.changeColor("#1E5766")
     canvasjugui.anime(rect2, ScalingAnimation(0.7, 0.5, 2, 2.5), new AnimationZone(700, 100, 200, 200))
+
+
   }
 
 

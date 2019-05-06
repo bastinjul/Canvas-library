@@ -1,11 +1,14 @@
 package LINGI2132
 
 import org.scalajs.dom
+import org.scalajs.dom.html.Canvas
 import org.scalajs.dom.raw.{Event, HTMLImageElement}
-import org.scalajs.dom.{CanvasRenderingContext2D, html}
-import scala.scalajs.js.timers._
+import org.scalajs.dom.{CanvasRenderingContext2D, html, window}
 
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable
+import scala.scalajs.js.timers._
+import scala.scalajs.js.{Array => ArrayJs}
+import scala.collection.mutable.{ArrayBuffer, Queue}
 
 class Canvasjugui(canvas: html.Canvas) {
 
@@ -32,7 +35,85 @@ class Canvasjugui(canvas: html.Canvas) {
     }
   }
 
+  def interact(shape: JGShape, interaction: Interaction[JGShape]): Unit = {
+    shape.draw(ctx)
+    interaction match {
+      case changeColorInteraction: ChangeColorInteraction => changeColorInteractions.append((shape, changeColorInteraction))
+      case disapearInteraction: DisapearInteraction => disapearInteractions.append((shape, disapearInteraction))
+    }
+  }
+
+  var changeColorInteractions = new ArrayBuffer[(JGShape, Interaction[JGShape])]
+  var disapearInteractions = new ArrayBuffer[(JGShape, Interaction[JGShape])]
+
+  canvas.onclick = {
+    e: dom.MouseEvent => {
+      disapearInteractions.foreach(i => {
+        i._2.interact(i._1, ctx, e.clientX, e.clientY)
+      })
+    }
+  }
+
+  canvas.ondblclick = {
+    e: dom.MouseEvent => {
+      changeColorInteractions.foreach(i => {
+        i._2.interact(i._1, ctx, e.clientX, e.clientY)
+      })
+    }
+  }
+
 }
+
+trait Interactive {
+
+}
+
+trait Interaction [ApplyOn <: Interactive] {
+  def interact(shape: JGShape, ctx: dom.CanvasRenderingContext2D, x: Double, y: Double)
+}
+
+case class DisapearInteraction(seconds: Double) extends Interaction[JGShape] {
+
+  override def interact(shape: JGShape, ctx: CanvasRenderingContext2D, x: Double, y: Double): Unit = {
+    println("smpl")
+    if(shape.inLimits(x, y)){
+      disapear(shape, ctx, shape.parameters.color, shape.parameters.fill)
+    }
+  }
+
+  def disapear(shape: JGShape, ctx: CanvasRenderingContext2D, color: String, fill: Boolean): Unit = {
+    shape.clearArea(true)
+    shape.draw(ctx)
+    shape.fill(false)
+    shape.draw(ctx)
+    if (seconds > 0){
+      setTimeout(1000*seconds){
+        shape.changeColor(color)
+        shape.fill(fill)
+        shape.draw(ctx)
+      }
+
+    }
+  }
+}
+
+case class ChangeColorInteraction(colors: Queue[String]) extends Interaction[JGShape] {
+  override def interact(shape: JGShape, ctx: CanvasRenderingContext2D, x: Double, y: Double): Unit = {
+    println("dbl")
+    colors.enqueue(shape.parameters.color)
+    if(shape.inLimits(x, y)){
+      changeColor(shape, ctx)
+    }
+  }
+
+  def changeColor(shape: JGShape, ctx: CanvasRenderingContext2D): Unit = {
+    shape.changeColor(colors.dequeue())
+    colors.enqueue(shape.parameters.color)
+    shape.draw(ctx)
+  }
+}
+
+
 
 class AnimationZone(xA: Double, yA: Double, widthA: Double, heightA: Double) {
   object zone{
@@ -51,7 +132,7 @@ trait Animation [ApplyOn <: Animable] {
   def march(shape: JGShape, ctx: dom.CanvasRenderingContext2D, animationZone: AnimationZone): Unit
 }
 
-case class LineDashAnimation(lineDash: scala.scalajs.js.Array[Double]) extends Animation[JGShape] {
+case class LineDashAnimation(lineDash: ArrayJs[Double]) extends Animation[JGShape] {
   var offset = 0
 
   override def anime(shape: JGShape, ctx: dom.CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {
@@ -120,12 +201,12 @@ case class ScalingAnimation(minXScale : Double, minYScale: Double, maxXScale: Do
 
   override def march(shape: JGShape, ctx: CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {
     if (ascent) {
-      scaleX += (maxXScale - minYScale) / 50
-      scaleY += (maxYScale - minYScale) / 50
+      scaleX += (maxXScale - minYScale) / 60
+      scaleY += (maxYScale - minYScale) / 60
     }
     else {
-      scaleX -= (maxXScale - minYScale) / 50
-      scaleY -= (maxYScale - minYScale) / 50
+      scaleX -= (maxXScale - minYScale) / 60
+      scaleY -= (maxYScale - minYScale) / 60
     }
     if (scaleX >= maxXScale) {
       ascent = false
@@ -135,14 +216,14 @@ case class ScalingAnimation(minXScale : Double, minYScale: Double, maxXScale: Do
     }
 
     draw(shape, ctx, animationZone)
-    setTimeout(100) {
+    setTimeout(60) {
       march(shape, ctx, animationZone)
     }
   }
 }
 
 
-abstract class JGShape(var x: Double, var y: Double) extends Animable {
+abstract class JGShape(var x: Double, var y: Double) extends Animable with Interactive {
 
   object parameters {
     var color : String = "#000000"
@@ -151,7 +232,7 @@ abstract class JGShape(var x: Double, var y: Double) extends Animable {
     var fill : Boolean = false
     var clip : Boolean = false
     var lineDashOffset : Double = 0
-    var lineDash: scala.scalajs.js.Array[Double] = scala.scalajs.js.Array.apply(0, 0)
+    var lineDash: ArrayJs[Double] = ArrayJs.apply(0, 0)
     var scaleX : Double = 1
     var scaleY : Double = 1
     var compositeOperation : String = "source-over"
@@ -248,6 +329,8 @@ abstract class JGShape(var x: Double, var y: Double) extends Animable {
 
   def drawShape(ctx: dom.CanvasRenderingContext2D) : Unit
 
+  def inLimits(xInput: Double, yInput: Double) : Boolean
+
   def translateX(i: Double) : Unit = {
     this.x += i
   }
@@ -282,7 +365,7 @@ abstract class JGShape(var x: Double, var y: Double) extends Animable {
     this.parameters.transparency = t
   }
 
-  def setLineDash(value: scala.scalajs.js.Array[Double]) : Unit = {
+  def setLineDash(value: ArrayJs[Double]) : Unit = {
     this.parameters.lineDash = value
   }
 
@@ -339,6 +422,10 @@ abstract class JGShape(var x: Double, var y: Double) extends Animable {
 
 case class JGRectangle(var xr: Double, var yr: Double, var width: Double, var height: Double) extends JGShape(x = xr, y = yr) {
 
+  override def inLimits(xInput: Double, yInput: Double): Boolean = {
+    xInput >= xr && xInput <= xr+width && yInput >= yr && yInput <= yr+height
+  }
+
   override def draw(ctx: CanvasRenderingContext2D): Unit = {
     contextSetGlobalParameters(ctx)
 
@@ -368,6 +455,11 @@ case class JGRectangle(var xr: Double, var yr: Double, var width: Double, var he
 }
 
 case class JGLine(var x1: Double, var y1: Double, var x2: Double, var y2: Double) extends JGShape(x = x1, y = y1) with LineParameters {
+
+  override def inLimits(xInput: Double, yInput: Double): Boolean = {
+    false
+  }
+
   override def drawShape(ctx: dom.CanvasRenderingContext2D): Unit = {
     ctx.beginPath()
     setParameters(ctx)
@@ -377,6 +469,11 @@ case class JGLine(var x1: Double, var y1: Double, var x2: Double, var y2: Double
 }
 
 case class JGLinearGradient(var x1: Double, var y1: Double, var x2: Double, var y2: Double, rect: JGRectangle) extends JGShape(x = rect.x, y = rect.y) with ColorStop {
+
+
+  override def inLimits(xInput: Double, yInput: Double): Boolean = {
+    rect.inLimits(xInput, yInput)
+  }
 
   override def draw(ctx: CanvasRenderingContext2D): Unit = {
     contextSetGlobalParameters(ctx)
@@ -405,6 +502,11 @@ case class JGLinearGradient(var x1: Double, var y1: Double, var x2: Double, var 
 }
 
 case class JGRadialGradient(var x1: Double, var y1: Double, var r1: Double, var x2: Double, var y2: Double, var r2: Double, rect: JGRectangle) extends JGShape(x = rect.x, y = rect.y) with ColorStop {
+
+
+  override def inLimits(xInput: Double, yInput: Double): Boolean = {
+    rect.inLimits(xInput, yInput)
+  }
 
   override def draw(ctx: CanvasRenderingContext2D): Unit = {
     contextSetGlobalParameters(ctx)
@@ -471,6 +573,11 @@ trait LineParameters {
 
 case class JGCircle(var xc: Double, var yc: Double, var radius: Double) extends JGShape(x = xc, y = yc) {
 
+
+  override def inLimits(xInput: Double, yInput: Double): Boolean = {
+    JGRectangle(xc-radius, yc-radius, 2*radius, 2*radius).inLimits(xInput, yInput)
+  }
+
   override def drawShape(ctx: dom.CanvasRenderingContext2D): Unit = {
     ctx.beginPath()
     ctx.arc(x, y, radius, 0.0, Math.PI * 2, true)
@@ -479,6 +586,12 @@ case class JGCircle(var xc: Double, var yc: Double, var radius: Double) extends 
 }
 
 case class JGArc(var xa: Double, var ya: Double, var radius: Double, var startingAngle: Double, var endAngle: Double, var anticlockwise: Boolean) extends JGShape(x = xa, y = ya){
+
+
+  override def inLimits(xInput: Double, yInput: Double): Boolean = {
+    JGCircle(xa, ya, radius).inLimits(xInput, yInput)
+  }
+
   override def drawShape(ctx: CanvasRenderingContext2D): Unit = {
     ctx.beginPath()
     ctx.arc(x, y, radius, startingAngle, endAngle, anticlockwise)
@@ -486,6 +599,12 @@ case class JGArc(var xa: Double, var ya: Double, var radius: Double, var startin
 }
 
 case class JGQuadraticCurve(var cp1x: Double, var cp1y: Double, var xc: Double, var yc: Double) extends JGShape(x = xc, y = yc) {
+
+
+  override def inLimits(xInput: Double, yInput: Double): Boolean = {
+    false
+    //TODO
+  }
 
   override def drawShape(ctx: dom.CanvasRenderingContext2D): Unit = {
     ctx.beginPath()
@@ -495,6 +614,12 @@ case class JGQuadraticCurve(var cp1x: Double, var cp1y: Double, var xc: Double, 
 
 case class JGBezierCurve(var cp1x: Double, var cp1y: Double, var cp2x: Double, var cp2y: Double, var xc: Double, var yc: Double) extends JGShape(x = xc, y = yc) {
 
+
+  override def inLimits(xInput: Double, yInput: Double): Boolean = {
+    false
+    //TODO
+  }
+
   override def drawShape(ctx: dom.CanvasRenderingContext2D): Unit = {
     ctx.beginPath()
     ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)
@@ -502,6 +627,11 @@ case class JGBezierCurve(var cp1x: Double, var cp1y: Double, var cp2x: Double, v
 }
 
 case class JGPatterns(var src: String, patternType: String, rect: JGRectangle) extends JGShape(x = rect.x, y = rect.y) {
+
+
+  override def inLimits(xInput: Double, yInput: Double): Boolean = {
+    rect.inLimits(xInput, yInput)
+  }
 
   override def draw(ctx: CanvasRenderingContext2D): Unit = {
     contextSetGlobalParameters(ctx)
@@ -529,6 +659,19 @@ case class JGPatterns(var src: String, patternType: String, rect: JGRectangle) e
 
 case class JGImage(var src : String, var xi : Double, var yi : Double) extends JGShape(x = xi, y = yi) {
 
+  var image : HTMLImageElement =  dom.document.createElement("img").asInstanceOf[HTMLImageElement]
+  image.src = src
+
+  override def inLimits(xInput: Double, yInput: Double): Boolean = {
+    if (this.slice.dWidth > 0) {
+      JGRectangle(xi, yi, this.slice.dWidth, this.slice.dHeight).inLimits(xInput, yInput)
+    }
+    else {
+      JGRectangle(xi, yi, image.width, image.height).inLimits(xInput, yInput)
+    }
+
+  }
+
   object slice {
     var slicing : Boolean = false
     var sx : Double = 0
@@ -548,8 +691,6 @@ case class JGImage(var src : String, var xi : Double, var yi : Double) extends J
   }
 
   override def drawShape(ctx: CanvasRenderingContext2D): Unit = {
-    val image = dom.document.createElement("img").asInstanceOf[HTMLImageElement]
-    image.src = src
     image.onload = { evt: Event =>
       if(this.slice.slicing)
         ctx.drawImage(image, this.slice.sx, this.slice.sy, this.slice.sWidth, this.slice.sHeight, this.x, this.y, this.slice.dWidth, this.slice.dHeight)
@@ -580,6 +721,12 @@ case class JGImage(var src : String, var xi : Double, var yi : Double) extends J
 }
 
 case class JGText(var text: String, var xt: Double, var yt: Double) extends JGShape(x = xt, y = yt) with StylingText {
+
+
+  override def inLimits(xInput: Double, yInput: Double): Boolean = {
+    false
+    //TODO
+  }
 
   override def draw(ctx: CanvasRenderingContext2D): Unit = {
     contextSetGlobalParameters(ctx)
@@ -668,7 +815,7 @@ object Extensions {
       s
     }
 
-    def setLineDash(value: scala.scalajs.js.Array[Double]) : Array[ApplyOn] = {
+    def setLineDash(value: ArrayJs[Double]) : Array[ApplyOn] = {
       s.foreach(sh => sh.setLineDash(value))
       s
     }
