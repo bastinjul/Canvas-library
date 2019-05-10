@@ -8,7 +8,6 @@ case class JGQuadraticCurve(var cp1x: Double, var cp1y: Double, var xc: Double, 
 
   override def inLimits(xInput: Double, yInput: Double): Boolean = {
     false
-    //TODO
   }
 
   override def drawShape(ctx: dom.CanvasRenderingContext2D): Unit = {

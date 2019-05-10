@@ -1,13 +1,13 @@
-package LINGI2132.JuGuiDSL.Rest
+package LINGI2132.JuGuiDSL
 
 import LINGI2132.JuGuiDSL.Animations.AnimationTraits.Animation
 import LINGI2132.JuGuiDSL.Animations.{AnimationZone, LineDashAnimation, RotationAnimation, ScalingAnimation}
 import LINGI2132.JuGuiDSL.Interactions.{ChangeColorInteraction, DisapearInteraction, Interaction}
-import org.scalajs.dom
-import org.scalajs.dom.{html}
-
-import scala.collection.mutable.{ArrayBuffer}
 import LINGI2132.JuGuiDSL.JGShape._
+import org.scalajs.dom
+import org.scalajs.dom.html
+
+import scala.collection.mutable.ArrayBuffer
 
 
 class Canvasjugui(canvas: html.Canvas) {
@@ -60,6 +60,5 @@ class Canvasjugui(canvas: html.Canvas) {
       })
     }
   }
-
 }
 

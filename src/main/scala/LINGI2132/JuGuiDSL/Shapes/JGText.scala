@@ -9,7 +9,6 @@ case class JGText(var text: String, var xt: Double, var yt: Double) extends JGSh
 
   override def inLimits(xInput: Double, yInput: Double): Boolean = {
     false
-    //TODO
   }
 
   override def draw(ctx: CanvasRenderingContext2D): Unit = {

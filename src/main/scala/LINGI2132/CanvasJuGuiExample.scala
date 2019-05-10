@@ -1,9 +1,9 @@
 package LINGI2132
 
 import LINGI2132.JuGuiDSL.Animations._
-import LINGI2132.JuGuiDSL.Rest.Canvasjugui
+import LINGI2132.JuGuiDSL.Canvasjugui
 import org.scalajs.dom
-import dom.{html}
+import dom.html
 
 import scala.collection.mutable.Queue
 import scala.scalajs.js.{Array => ArrayJs}
@@ -31,7 +31,7 @@ object CanvasJuGuiExample {
     val image2 = JGImage("https://mdn.mozillademos.org/files/5397/rhino.jpg", 500, 200)
     val clip = JGRectangle(0, 0, 500, 500)
 
-    (circles ++ bezierCurves).setGlobalCompositeOperation("overlay") // import Extensions._
+    (circles ++ bezierCurves).setGlobalCompositeOperation("overlay")
     circles(0).translate(20, 20)
     rectangles(0).translateX(10)
     rectangles(1).translateY(5)
