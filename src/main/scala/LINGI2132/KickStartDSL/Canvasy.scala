@@ -1,9 +1,7 @@
-package LINGI2132
+package LINGI2132.KickStartDSL
 
 import org.scalajs.dom
-import org.scalajs.dom.{CanvasRenderingContext2D, html}
-
-import Col._
+import org.scalajs.dom.html
 
 import scala.collection.mutable.ArrayBuffer
 

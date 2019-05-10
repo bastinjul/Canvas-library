@@ -1,15 +1,22 @@
 package LINGI2132
 
+import LINGI2132.JuGuiDSL.Animations._
+import LINGI2132.JuGuiDSL.Rest.Canvasjugui
 import org.scalajs.dom
-import dom.{document, html}
-import Extensions._
+import dom.{html}
 
 import scala.collection.mutable.Queue
 import scala.scalajs.js.{Array => ArrayJs}
+import LINGI2132.JuGuiDSL.ClassExtensions.ClassExtensions._
+import LINGI2132.JuGuiDSL.Interactions._
+import LINGI2132.JuGuiDSL.Shapes._
 
-object CanvasjuguiExample {
+
+
+object CanvasJuGuiExample {
   def run(canvas: html.Canvas): Unit = {
     val canvasjugui = new Canvasjugui(canvas)
+
 
     val circles = Array.fill(4)(JGCircle(50, 50, 50))
     val rectangles = Array.fill(3)(JGRectangle(20, 20, 20, 20))
@@ -24,7 +31,7 @@ object CanvasjuguiExample {
     val image2 = JGImage("https://mdn.mozillademos.org/files/5397/rhino.jpg", 500, 200)
     val clip = JGRectangle(0, 0, 500, 500)
 
-    (circles ++ bezierCurves).setGlobalCompositeOperation("overlay")
+    (circles ++ bezierCurves).setGlobalCompositeOperation("overlay") // import Extensions._
     circles(0).translate(20, 20)
     rectangles(0).translateX(10)
     rectangles(1).translateY(5)
@@ -128,9 +135,5 @@ object CanvasjuguiExample {
     rect2.changeColor("#1E5766")
     canvasjugui.anime(rect2, ScalingAnimation(0.7, 0.5, 2, 2.5), new AnimationZone(700, 100, 200, 200))
 
-
   }
-
-
-
 }

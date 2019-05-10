@@ -2,10 +2,11 @@ package LINGI2132
 
 
 
+import LINGI2132.KickStartDSL.Col._
+import LINGI2132.KickStartDSL.Extends._
+import LINGI2132.KickStartDSL.{Canvasy, Circle, Radius, Rectangle, StrokeColor, StrokeWidth, Width}
 import org.scalajs.dom
 import dom.{document, html}
-import Col._
-import Extends._
 
 object WebApp {
   def main(args: Array[String]): Unit = {
@@ -18,7 +19,7 @@ object WebApp {
 
     //scalaJSDemo(canvas)
     //dslDemo(canvas)
-    CanvasjuguiExample.run(canvas)
+    CanvasJuGuiExample.run(canvas)
   }
 
   def scalaJSDemo(c: html.Canvas) = {
