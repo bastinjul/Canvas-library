@@ -6,7 +6,6 @@ import LINGI2132.JuGuiDSL.Interactions.{ChangeColorInteraction, DisapearInteract
 import LINGI2132.JuGuiDSL.JGShape._
 import org.scalajs.dom
 import org.scalajs.dom.html
-
 import scala.collection.mutable.ArrayBuffer
 
 
@@ -15,18 +14,18 @@ class Canvasjugui(canvas: html.Canvas) {
 
   var shapes = new ArrayBuffer[JGShape]
 
-  def += (shape: Any): Unit = {
+  def += (shape: Any): Unit = { // add shapes to buffer
     shape match{
       case a: Array[JGShape] => a.foreach(s => shapes.append(s))
       case sh : JGShape => shapes.append(sh)
     }
   }
 
-  def draw() : Unit = {
+  def draw() : Unit = { // draw each shape
     shapes.foreach(s => s.draw(ctx))
   }
 
-  def anime(shape: JGShape, animation: Animation[JGShape], animationZone: AnimationZone): Unit = {
+  def anime(shape: JGShape, animation: Animation[JGShape], animationZone: AnimationZone): Unit = { // make animation happen
     animation match{
       case lineDashAnimation : LineDashAnimation => lineDashAnimation.anime(shape, ctx, animationZone)
       case rotationAnimation: RotationAnimation => rotationAnimation.anime(shape, ctx, animationZone)
@@ -34,7 +33,10 @@ class Canvasjugui(canvas: html.Canvas) {
     }
   }
 
-  def interact(shape: JGShape, interaction: Interaction[JGShape]): Unit = {
+  var disapearInteractions = new ArrayBuffer[(JGShape, Interaction[JGShape])]
+  var changeColorInteractions = new ArrayBuffer[(JGShape, Interaction[JGShape])]
+
+  def interact(shape: JGShape, interaction: Interaction[JGShape]): Unit = {  // make interaction happen
     shape.draw(ctx)
     interaction match {
       case changeColorInteraction: ChangeColorInteraction => changeColorInteractions.append((shape, changeColorInteraction))
@@ -42,10 +44,7 @@ class Canvasjugui(canvas: html.Canvas) {
     }
   }
 
-  var changeColorInteractions = new ArrayBuffer[(JGShape, Interaction[JGShape])]
-  var disapearInteractions = new ArrayBuffer[(JGShape, Interaction[JGShape])]
-
-  canvas.onclick = {
+  canvas.onclick = { // interact when canvas clicked
     e: dom.MouseEvent => {
       disapearInteractions.foreach(i => {
         i._2.interact(i._1, ctx, e.clientX, e.clientY)
@@ -53,7 +52,7 @@ class Canvasjugui(canvas: html.Canvas) {
     }
   }
 
-  canvas.ondblclick = {
+  canvas.ondblclick = { // interact when canvas clicked
     e: dom.MouseEvent => {
       changeColorInteractions.foreach(i => {
         i._2.interact(i._1, ctx, e.clientX, e.clientY)
