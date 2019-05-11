@@ -5,6 +5,11 @@ import org.scalajs.dom
 import org.scalajs.dom.CanvasRenderingContext2D
 import org.scalajs.dom.raw.{Event, HTMLImageElement}
 
+/**
+  * @param src source where the image is stored
+  * @param xi x coordinate of the image
+  * @param yi y coordinate of the image
+  */
 case class JGImage(var src : String, var xi : Double, var yi : Double) extends JGShape(x = xi, y = yi) {
 
   var image : HTMLImageElement =  dom.document.createElement("img").asInstanceOf[HTMLImageElement]

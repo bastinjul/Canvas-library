@@ -5,6 +5,14 @@ import org.scalajs.dom
 import org.scalajs.dom.CanvasRenderingContext2D
 import org.scalajs.dom.raw.{Event, HTMLImageElement}
 
+/**
+  *
+  * @param src         source where the pattern to be used as the pattern's image is stored
+  * @param patternType indicates how to repeat the pattern's image, possible values are
+  * "repeat" (both directions), "repeat-x" (horizontal only),
+  * "repeat-y" (vertical only), "no-repeat" (neither direction)
+  * @param rect a rectangle in which the pattern can fit
+  */
 case class JGPatterns(var src: String, patternType: String, rect: JGRectangle) extends JGShape(x = rect.x, y = rect.y) {
 
 

@@ -18,8 +18,9 @@ object CanvasJuGuiExample {
     val canvasjugui = new Canvasjugui(canvas)
 
     val line = JGLine(300, 100, 250, 50)
-    val bezierCurves = Array.fill(2)(JGBezierCurve(75, 37, 70, 25, 50, 25))
-    val arcs = Array.fill(2)(JGArc(60, 60, 20, 0.0, Math.PI/2, true))
+    val arcs = Array.fill(2)(JGArc(450, 75, 20, 0.0, Math.PI/2, true))
+    val quadraticCurve = JGQuadraticCurve(600, 50, 550, 30, 550, 100)
+    val bezierCurves = Array.fill(2)(JGBezierCurve(100, 100, 150, 37, 20, 100, 50, 25))
 
 
 
@@ -55,8 +56,8 @@ object CanvasJuGuiExample {
     rectangles(1).clearArea()
     rectangles(1).setGlobalCompositeOperation("overlay")
 
-    bezierCurves.fill(true)
-    bezierCurves.clearArea(true)
+    //bezierCurves.fill(true)
+    //bezierCurves.clearArea(true)
 
 
     arcs(1).fill(true)
@@ -106,6 +107,7 @@ object CanvasJuGuiExample {
     canvasjugui += text
     canvasjugui += image
     canvasjugui += image2
+    canvasjugui += quadraticCurve
     //canvasjugui += clip
 
     canvasjugui.draw()
