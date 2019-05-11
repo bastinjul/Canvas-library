@@ -23,13 +23,22 @@ object CanvasJuGuiExample {
     val bezierCurves = Array.fill(2)(JGBezierCurve(75, 37, 70, 25, 50, 25))
     val arcs = Array.fill(2)(JGArc(60, 60, 20, 0.0, Math.PI/2, true))
     val line = JGLine(0, 0, 35, 35)
+
+
+
     val linearGradient = JGLinearGradient(100, 100, 100 , 250, JGRectangle(100, 100, 150, 150))
     val radialGradient = JGRadialGradient(45, 45, 10, 52, 50, 30, JGRectangle(0, 0, 150, 150))
-    val patterns = JGPatterns("https://mdn.mozillademos.org/files/222/Canvas_createpattern.png", "repeat", JGRectangle(0, 300, 150, 150))
-    val text = JGText("Hello World!", 400, 20)
-    val image = JGImage("https://mdn.mozillademos.org/files/5397/rhino.jpg", 500, 100)
-    val image2 = JGImage("https://mdn.mozillademos.org/files/5397/rhino.jpg", 500, 200)
+    val patterns = JGPatterns("https://mdn.mozillademos.org/files/222/Canvas_createpattern.png", "repeat", JGRectangle(250, 450, 150, 150))
+    val text = JGText("Hello World!", 850, 450)
+    val image = JGImage("https://mdn.mozillademos.org/files/5397/rhino.jpg", 450, 450)
+    val image2 = JGImage("https://mdn.mozillademos.org/files/5397/rhino.jpg", 450, 500)
+
     val clip = JGRectangle(0, 0, 500, 500)
+
+
+
+
+
 
     (circles ++ bezierCurves).setGlobalCompositeOperation("overlay")
     circles(0).translate(20, 20)
@@ -104,36 +113,36 @@ object CanvasJuGuiExample {
 
     /*======INTERACTIONS=======*/
 
-    val cir2 = JGCircle(200, 600, 80)
+    val cir2 = JGCircle(100, 700, 40)
     cir2.fill(true)
     cir2.changeColor("#51BCD8")
     canvasjugui.interact(cir2, DisappearInteraction(3))
 
-    val cir3 = JGCircle(300, 600, 80)
+    val cir3 = JGCircle(200, 700, 40)
     cir3.fill(true)
     cir3.changeColor("#51BCD8")
     canvasjugui.interact(cir3, DisappearInteraction(-1))
 
-    val rect3 = JGRectangle(200, 300, 50, 60)
+    val rect3 = JGRectangle(350, 650, 50, 60)
     rect3.fill(true)
     canvasjugui.interact(rect3, ChangeColorInteraction(Queue.apply("#FF1313", "#3E792E", "#1647DF")))
 
-    val rect4 = JGRectangle(300, 300, 50, 60)
+    val rect4 = JGRectangle(500, 650, 50, 60)
     rect4.fill(true)
     canvasjugui.interact(rect4, ChangeColorInteraction(Queue.apply("#FF1313", "#3E792E", "#1647DF")))
 
 
     /*======ANIMATIONS======*/
-    val cir = JGCircle(450,450,50)
-    canvasjugui.animate(cir, LineDashAnimation(ArrayJs(4, 2)), new AnimationZone(395,395, 110, 110))
+    val cir = JGRectangle(450, 900, 30, 30)
+    canvasjugui.animate(cir, LineDashAnimation(ArrayJs(4, 2)), new AnimationZone(395,845, 110, 110))
 
-    val rect = JGRectangle(600, 600, 30, 30)
-    canvasjugui.animate(rect, RotationAnimation(615, 615), new AnimationZone(550, 550, 200, 200))
+    val rect = JGRectangle(600, 900, 30, 30)
+    canvasjugui.animate(rect, RotationAnimation(615, 915), new AnimationZone(550, 850, 200, 200))
 
-    val rect2 = JGRectangle(700, 100, 60, 60)
+    val rect2 = JGRectangle(100, 900, 60, 60)
     rect2.fill(true)
     rect2.changeColor("#1E5766")
-    canvasjugui.animate(rect2, ScalingAnimation(0.7, 0.5, 2, 2.5), new AnimationZone(700, 100, 200, 200))
+    canvasjugui.animate(rect2, ScalingAnimation(0.7, 0.5, 2, 2.5), new AnimationZone(100, 900, 200, 200))
 
   }
 }
