@@ -17,41 +17,41 @@ object CanvasJuGuiExample {
   def run(canvas: html.Canvas): Unit = {
     val canvasjugui = new Canvasjugui(canvas)
 
-
-    val circles = Array.fill(4)(JGCircle(50, 50, 50))
-    val rectangles = Array.fill(3)(JGRectangle(20, 20, 20, 20))
+    val line = JGLine(300, 100, 250, 50)
     val bezierCurves = Array.fill(2)(JGBezierCurve(75, 37, 70, 25, 50, 25))
     val arcs = Array.fill(2)(JGArc(60, 60, 20, 0.0, Math.PI/2, true))
-    val line = JGLine(0, 0, 35, 35)
 
 
 
-    val linearGradient = JGLinearGradient(100, 100, 100 , 250, JGRectangle(100, 100, 150, 150))
-    val radialGradient = JGRadialGradient(45, 45, 10, 52, 50, 30, JGRectangle(0, 0, 150, 150))
-    val patterns = JGPatterns("https://mdn.mozillademos.org/files/222/Canvas_createpattern.png", "repeat", JGRectangle(250, 450, 150, 150))
-    val text = JGText("Hello World!", 850, 450)
-    val image = JGImage("https://mdn.mozillademos.org/files/5397/rhino.jpg", 450, 450)
-    val image2 = JGImage("https://mdn.mozillademos.org/files/5397/rhino.jpg", 450, 500)
+    val circles = Array.fill(4)(JGCircle(100, 200, 50))
+    val rectangles = Array.fill(3)(JGRectangle(300, 50, 40, 80))
+
+
+    val radialGradient = JGRadialGradient(45, 495, 10, 52, 500, 30, JGRectangle(0, 450, 150, 150))
+    val linearGradient = JGLinearGradient(200, 450, 200 , 600, JGRectangle(200, 450, 150, 150))
+    val patterns = JGPatterns("https://mdn.mozillademos.org/files/222/Canvas_createpattern.png", "repeat", JGRectangle(450, 450, 150, 150))
+    val text = JGText("Hello World!", 950, 450)
+    val image = JGImage("https://mdn.mozillademos.org/files/5397/rhino.jpg", 650, 450)
+    val image2 = JGImage("https://mdn.mozillademos.org/files/5397/rhino.jpg", 800, 450)
 
     val clip = JGRectangle(0, 0, 500, 500)
 
 
 
-
-
-
     (circles ++ bezierCurves).setGlobalCompositeOperation("overlay")
-    circles(0).translate(20, 20)
+    circles(0).translate(50, 50)
     rectangles(0).translateX(10)
     rectangles(1).translateY(5)
     rectangles(0).setLineDash(ArrayJs(4, 2))
 
-    circles.changeColor("#7CC8C5")
+    circles.changeColor("#7CC8C5") // apply on group !
 
     circles(2).strokeWidth(6)
 
     circles(3).fill(true)
     circles(3).transparency(0.5)
+
+
     rectangles(1).clearArea()
     rectangles(1).setGlobalCompositeOperation("overlay")
 
@@ -84,12 +84,12 @@ object CanvasJuGuiExample {
     text.textBaseline("hanging")
 
     image.resize(100, 60)
-    image2.slice(33, 71, 104, 124, 500, 200, 87, 104)
+    image2.slice(33, 71, 104, 124, 800, 450, 87, 104)
 
     rectangles(0).translate(50, 50)
     rectangles(0).rotate((Math.PI / 180) * 25, 0, 0)
-
     rectangles(0).scale(2, 2)
+
 
     rectangles(2).transform(2, 0, 0, 2, 30, 30)
 

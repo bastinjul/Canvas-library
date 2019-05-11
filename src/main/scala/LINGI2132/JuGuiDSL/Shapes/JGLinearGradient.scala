@@ -4,6 +4,14 @@ import LINGI2132.JuGuiDSL.JGShape.JGShape
 import LINGI2132.JuGuiDSL.Shapes.ShapeTraits.ColorStop
 import org.scalajs.dom.CanvasRenderingContext2D
 
+/**
+  *
+  * @param x1 The x-axis coordinate of the start point.
+  * @param y1 The y-axis coordinate of the start point.
+  * @param x2 The x-axis coordinate of the end point.
+  * @param y2 The y-axis coordinate of the end point.
+  * @param rect A rectangle in which the linear gradient will fit
+  */
 case class JGLinearGradient(var x1: Double, var y1: Double, var x2: Double, var y2: Double, rect: JGRectangle) extends JGShape(x = rect.x, y = rect.y) with ColorStop {
 
 
