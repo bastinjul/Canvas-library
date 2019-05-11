@@ -6,6 +6,11 @@ import org.scalajs.dom.CanvasRenderingContext2D
 
 import scala.scalajs.js.timers.setTimeout
 
+/**
+  *
+  * @param centerX x coordinate of the center of the rotation
+  * @param centerY y coordinate of the center of the rotation
+  */
 case class RotationAnimation(centerX: Double, centerY: Double) extends Animation[JGShape] {
   var angle : Double = 0
   override def animate(shape: JGShape, ctx: CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {

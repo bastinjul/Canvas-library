@@ -8,11 +8,15 @@ import scala.scalajs.js.{Array => ArrayJs}
 
 
 /**
+
+ */
+/**
   * this class is used to provide a default constructor, default functions
   * and default values (contained in objects) for all classes extending this abstract class.
   * Transformations are only applied when the shape is removed then drawn again
- */
-
+  * @param x x coordinate of the shape
+  * @param y y coordinate of the shape
+  */
 abstract class JGShape(var x: Double, var y: Double) extends Animable with Interactive {
 
 

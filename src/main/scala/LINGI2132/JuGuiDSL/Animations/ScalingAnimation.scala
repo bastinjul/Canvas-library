@@ -6,6 +6,13 @@ import org.scalajs.dom.CanvasRenderingContext2D
 
 import scala.scalajs.js.timers.setTimeout
 
+/**
+  *
+  * @param minXScale minimum horizontal scale of the shape
+  * @param minYScale minimum vertical scale of the shape
+  * @param maxXScale maximum horizontal scale of the shape
+  * @param maxYScale maximum vertical scale of the shape
+  */
 case class ScalingAnimation(minXScale : Double, minYScale: Double, maxXScale: Double, maxYScale: Double) extends Animation[JGShape]{
   var scaleX : Double = minXScale
   var scaleY : Double = minYScale

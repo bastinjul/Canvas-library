@@ -6,6 +6,10 @@ import org.scalajs.dom.CanvasRenderingContext2D
 
 import scala.scalajs.js.timers.setTimeout
 
+/**
+  * @param seconds number of seconds to wait for the shape to reappear,
+  *                -1 for not make it appear again
+  */
 case class DisappearInteraction(seconds: Double) extends Interaction[JGShape] {
 
   override def interact(shape: JGShape, ctx: CanvasRenderingContext2D, x: Double, y: Double): Unit = {

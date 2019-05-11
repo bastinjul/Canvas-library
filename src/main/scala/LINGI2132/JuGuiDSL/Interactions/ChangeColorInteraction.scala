@@ -6,6 +6,9 @@ import org.scalajs.dom.CanvasRenderingContext2D
 
 import scala.collection.mutable.Queue
 
+/**
+  * @param colors a queue containing the colors that the shape using this interaction can take
+  */
 case class ChangeColorInteraction(colors: Queue[String]) extends Interaction[JGShape] {
 
 

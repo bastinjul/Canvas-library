@@ -7,7 +7,9 @@ import org.scalajs.dom
 import scala.scalajs.js.timers.setTimeout
 import scala.scalajs.js.{Array => ArrayJs}
 
-
+/**
+  * @param lineDash
+  */
 case class LineDashAnimation(lineDash: ArrayJs[Double]) extends Animation[JGShape] {
   var offset = 0
 
