@@ -97,7 +97,8 @@ abstract class JGShape(var x: Double, var y: Double) extends Animable with Inter
   }
 
   /**
-    * Resets transformation parameters
+    * Resets the context parameters so that the transformations from
+    * @method contextSetTransformation are not applied in the future anymore
     * @param ctx An instance of CanvasRenderingContext2D used for drawing shapes, text, ...
     */
   def contextResetTransformation(ctx: dom.CanvasRenderingContext2D): Unit = {
@@ -109,7 +110,7 @@ abstract class JGShape(var x: Double, var y: Double) extends Animable with Inter
   }
 
   /**
-    * Draws a shape
+    * Draws a shape in a way previously defined by the user (fill, clip or stroke)
     * @param ctx An instance of CanvasRenderingContext2D used for drawing shapes, text, ...
     */
   def applyShape(ctx: dom.CanvasRenderingContext2D): Unit ={

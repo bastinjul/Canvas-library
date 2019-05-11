@@ -18,7 +18,7 @@ class Canvasjugui(canvas: html.Canvas) {
 
   /**
     * Add shapes to arraybuffer
-    * @param shape: A shape that extends JGShape
+    * @param shape: A shape or a group of shapes that extend JGShape
     */
   def += (shape: Any): Unit = {
     shape match{
@@ -72,7 +72,7 @@ class Canvasjugui(canvas: html.Canvas) {
     }
   }
 
-  canvas.ondblclick = { // interact when canvas clicked
+  canvas.ondblclick = { // interact when canvas is double clicked
     e: dom.MouseEvent => {
       changeColorInteractions.foreach(i => {
         i._2.interact(i._1, ctx, e.clientX, e.clientY)
