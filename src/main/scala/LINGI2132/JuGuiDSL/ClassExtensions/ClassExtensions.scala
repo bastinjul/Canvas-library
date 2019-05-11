@@ -5,8 +5,14 @@ import LINGI2132.JuGuiDSL.JGShape.JGShape
 
 import scala.scalajs.js.{Array => ArrayJs}
 
-
+/**
+  * for declaring implicit classes
+  */
 object ClassExtensions {
+
+  /**
+    * called when applying transformations/operations on a group of shapes
+    */
   implicit class jgShapeArrayExtend[ApplyOn <: JGShape](s: Array[ApplyOn]){
     def translateY(i: Double) : Array[ApplyOn] = {
       s.foreach(sh => sh.translateY(i))
@@ -39,7 +45,7 @@ object ClassExtensions {
     }
 
     def clearArea(b: Boolean) : Array[ApplyOn] = {
-      s.foreach(sh => sh.clearArea(b))
+      s.foreach(sh => sh.clearArea())
       s
     }
 

@@ -2,10 +2,12 @@ package LINGI2132.JuGuiDSL
 
 import LINGI2132.JuGuiDSL.Animations.AnimationTraits.Animation
 import LINGI2132.JuGuiDSL.Animations.{AnimationZone, LineDashAnimation, RotationAnimation, ScalingAnimation}
-import LINGI2132.JuGuiDSL.Interactions.{ChangeColorInteraction, DisapearInteraction, Interaction}
+import LINGI2132.JuGuiDSL.Interactions.InteractionTraits.Interaction
+import LINGI2132.JuGuiDSL.Interactions.{ChangeColorInteraction, DisappearInteraction}
 import LINGI2132.JuGuiDSL.JGShape._
 import org.scalajs.dom
 import org.scalajs.dom.html
+
 import scala.collection.mutable.ArrayBuffer
 
 
@@ -14,33 +16,51 @@ class Canvasjugui(canvas: html.Canvas) {
 
   var shapes = new ArrayBuffer[JGShape]
 
-  def += (shape: Any): Unit = { // add shapes to buffer
+  /**
+    * Add shapes to arraybuffer
+    * @param shape: A shape that extends JGShape
+    */
+  def += (shape: Any): Unit = {
     shape match{
       case a: Array[JGShape] => a.foreach(s => shapes.append(s))
       case sh : JGShape => shapes.append(sh)
     }
   }
 
+  /**
+    * draw each shape contained in the buffer
+    */
   def draw() : Unit = { // draw each shape
     shapes.foreach(s => s.draw(ctx))
   }
 
-  def anime(shape: JGShape, animation: Animation[JGShape], animationZone: AnimationZone): Unit = { // make animation happen
+  /**
+    * Make an animation happen
+    * @param shape  A shape that extends JGShape
+    * @param animation An animation that extends Animation[JGShape]
+    * @param animationZone The area in which the animation will take place
+    */
+  def animate(shape: JGShape, animation: Animation[JGShape], animationZone: AnimationZone): Unit = {
     animation match{
-      case lineDashAnimation : LineDashAnimation => lineDashAnimation.anime(shape, ctx, animationZone)
-      case rotationAnimation: RotationAnimation => rotationAnimation.anime(shape, ctx, animationZone)
-      case scalingAnimation: ScalingAnimation => scalingAnimation.anime(shape, ctx, animationZone)
+      case lineDashAnimation : LineDashAnimation => lineDashAnimation.animate(shape, ctx, animationZone)
+      case rotationAnimation: RotationAnimation => rotationAnimation.animate(shape, ctx, animationZone)
+      case scalingAnimation: ScalingAnimation => scalingAnimation.animate(shape, ctx, animationZone)
     }
   }
 
   var disapearInteractions = new ArrayBuffer[(JGShape, Interaction[JGShape])]
   var changeColorInteractions = new ArrayBuffer[(JGShape, Interaction[JGShape])]
 
-  def interact(shape: JGShape, interaction: Interaction[JGShape]): Unit = {  // make interaction happen
+  /**
+    * Make an interaction happen
+    * @param shape A shape that extends JGShape
+    * @param interaction An interaction that extends Interaction[JGShape]
+    */
+  def interact(shape: JGShape, interaction: Interaction[JGShape]): Unit = {
     shape.draw(ctx)
     interaction match {
       case changeColorInteraction: ChangeColorInteraction => changeColorInteractions.append((shape, changeColorInteraction))
-      case disapearInteraction: DisapearInteraction => disapearInteractions.append((shape, disapearInteraction))
+      case disapearInteraction: DisappearInteraction => disapearInteractions.append((shape, disapearInteraction))
     }
   }
 

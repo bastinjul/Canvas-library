@@ -50,11 +50,29 @@ case class JGImage(var src : String, var xi : Double, var yi : Double) extends J
     }
   }
 
+  /**
+    * resizes the image according to:
+    * @param width
+    * @param height
+    */
   def resize(width: Double, height: Double): Unit = {
     this.slice.dWidth = width
     this.slice.dHeight = height
   }
 
+  /**
+    * slices the image
+    * @param sx The x-axis coordinate of the top left corner of the sub-rectangle of
+    *           the source image to draw into the destination context.
+    * @param sy The y-axis coordinate of the top left corner of the sub-rectangle of
+    *           the source image to draw into the destination context.
+    * @param sWidth The width of the sub-rectangle of the source image to draw into the destination context.
+    * @param sHeight The height of the sub-rectangle of the source image to draw into the destination context.
+    * @param dx The x-axis coordinate in the destination canvas at which to place the top-left corner of the source image.
+    * @param dy The y-axis coordinate in the destination canvas at which to place the top-left corner of the source image.
+    * @param dWidth The width to draw the image in the destination canvas
+    * @param dHeight The height to draw the image in the destination canvas.
+    */
   def slice(sx: Double, sy: Double, sWidth: Double, sHeight : Double, dx: Double, dy: Double, dWidth: Double, dHeight: Double): Unit ={
     this.slice.sx = sx
     this.slice.sy = sy

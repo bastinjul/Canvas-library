@@ -8,7 +8,7 @@ import scala.scalajs.js.timers.setTimeout
 
 case class RotationAnimation(centerX: Double, centerY: Double) extends Animation[JGShape] {
   var angle : Double = 0
-  override def anime(shape: JGShape, ctx: CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {
+  override def animate(shape: JGShape, ctx: CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {
     march(shape, ctx, animationZone)
   }
 

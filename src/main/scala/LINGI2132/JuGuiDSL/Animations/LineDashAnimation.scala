@@ -11,7 +11,7 @@ import scala.scalajs.js.{Array => ArrayJs}
 case class LineDashAnimation(lineDash: ArrayJs[Double]) extends Animation[JGShape] {
   var offset = 0
 
-  override def anime(shape: JGShape, ctx: dom.CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {
+  override def animate(shape: JGShape, ctx: dom.CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {
     shape.setLineDash(lineDash)
     march(shape, ctx, animationZone)
   }

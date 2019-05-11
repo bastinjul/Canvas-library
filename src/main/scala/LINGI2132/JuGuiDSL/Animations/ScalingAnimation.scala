@@ -11,7 +11,7 @@ case class ScalingAnimation(minXScale : Double, minYScale: Double, maxXScale: Do
   var scaleY : Double = minYScale
   var ascent : Boolean = true
 
-  override def anime(shape: JGShape, ctx: CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {
+  override def animate(shape: JGShape, ctx: CanvasRenderingContext2D, animationZone: AnimationZone): Unit = {
     march(shape, ctx, animationZone)
   }
 

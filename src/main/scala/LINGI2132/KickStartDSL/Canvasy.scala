@@ -14,6 +14,10 @@ class Canvasy(canvas: html.Canvas) {
 
   var shapes = new ArrayBuffer[Shape]()
 
+  /**
+    * Add shapes to arraybuffer
+    * @param shape: A shape that extends JGShape
+    */
   def += (shape: Any) : Unit =
     shape match {
       case r : Array[Rectangle] => {
@@ -24,10 +28,16 @@ class Canvasy(canvas: html.Canvas) {
       }
     }
 
+  /**
+    * draw each shape contained in the buffer
+    */
   def draw() : Unit = {
     shapes.foreach(sh => sh.draw(ctx))
   }
 
+  /**
+    * returns the instance of CanvasRenderingContext2D used for drawing shapes, text, ...
+    */
   def get_ctx() : dom.CanvasRenderingContext2D = ctx
 }
 
@@ -73,6 +83,10 @@ case class Circle(var radius: Double, var x: Int, var y: Int) extends Shape {
 }
 
 trait Shape extends CanvasyElement {
+  /**
+    * draws the shape
+    * @param ctx the instance of CanvasRenderingContext2D used for drawing shapes, text, ...
+    */
   def draw(ctx: dom.CanvasRenderingContext2D) : Unit
 
   object stroke {
@@ -80,10 +94,22 @@ trait Shape extends CanvasyElement {
     var color : String = "#000000"
   }
 
+  /**
+    * moves the shape vertically according to
+    * @param i
+    */
   def translateY(i: Int) : Unit
 
+  /**
+    * moves the shape horizontally according to
+    * @param i
+    */
   def translateX(i: Int) : Unit
 
+  /**
+    * resizes the shape according to
+    * @param d
+    */
   def size(d: Double) : Unit
 
 }
@@ -178,7 +204,15 @@ object Extends {
 
 }
 
+/**
+  * trait for shape modifier
+  * @tparam ApplyOn only apply on objects of type CanvasyElement
+  */
 trait CanvasyElementModifier[ApplyOn <: CanvasyElement] {
+  /**
+    * modify the shape x
+    * @param x the shape to apply on
+    */
   def change(x: ApplyOn): Unit
 }
 
