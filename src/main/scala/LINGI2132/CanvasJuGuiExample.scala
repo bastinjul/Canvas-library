@@ -22,11 +22,8 @@ object CanvasJuGuiExample {
     val quadraticCurve = JGQuadraticCurve(600, 50, 550, 30, 550, 100)
     val bezierCurves = Array.fill(2)(JGBezierCurve(100, 100, 150, 37, 20, 100, 50, 25))
 
-
-
     val circles = Array.fill(4)(JGCircle(100, 200, 50))
     val rectangles = Array.fill(3)(JGRectangle(300, 50, 40, 80))
-
 
     val radialGradient = JGRadialGradient(45, 495, 10, 52, 500, 30, JGRectangle(0, 450, 150, 150))
     val linearGradient = JGLinearGradient(200, 450, 200 , 600, JGRectangle(200, 450, 150, 150))
@@ -41,14 +38,13 @@ object CanvasJuGuiExample {
 
     (circles ++ bezierCurves).setGlobalCompositeOperation("overlay")
     circles(0).translate(50, 50)
+
     rectangles(0).translateX(10)
     rectangles(1).translateY(5)
     rectangles(0).setLineDash(ArrayJs(4, 2))
 
     circles.changeColor("#7CC8C5") // apply on group !
-
     circles(2).strokeWidth(6)
-
     circles(3).fill(true)
     circles(3).transparency(0.5)
 
@@ -115,15 +111,12 @@ object CanvasJuGuiExample {
 
     /*======INTERACTIONS=======*/
 
-    val cir2 = JGCircle(100, 700, 40)
-    cir2.fill(true)
-    cir2.changeColor("#51BCD8")
-    canvasjugui.interact(cir2, DisappearInteraction(3))
-
-    val cir3 = JGCircle(200, 700, 40)
-    cir3.fill(true)
-    cir3.changeColor("#51BCD8")
-    canvasjugui.interact(cir3, DisappearInteraction(-1))
+    val circles2 = Array.fill(2)(JGCircle(100, 700, 40))
+    circles2.changeColor("#51BCD8")
+    circles2.fill(true)
+    circles2(1).translateX(100)
+    canvasjugui.interact(circles2(0), DisappearInteraction(3))
+    canvasjugui.interact(circles2(1), DisappearInteraction(-1))
 
     val rect3 = JGRectangle(350, 650, 50, 60)
     rect3.fill(true)
